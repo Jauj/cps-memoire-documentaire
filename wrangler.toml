@@ -1,0 +1,49 @@
+name = "revue-presse"
+main = "src/index.js"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# === CRON TRIGGER (pipeline complet séquentiel) ===
+# Un seul cron lance les 8 phases enchaînées.
+# ⚠️ IMPORTANT : Nécessite Workers Paid ($5/mois) pour :
+#   - Limite de 1000 sous-requêtes (free = 50)
+#   - Temps d'exécution CPU 30s (free = 10ms)
+# Sur le plan gratuit, utiliser POST /trigger/all manuellement.
+[triggers]
+crons = ["0 6 * * *"]
+
+# === KV Namespace (bus inter-phases + mémoire éditoriale) ===
+[[kv_namespaces]]
+binding = "CACHE"
+id = "ef1ef185628f45d9bc6f9d5c209b0efe"
+
+# === D1 Database (mémoire documentaire épistémique) ===
+[[d1_databases]]
+binding = "DB"
+database_name = "revue-presse-db"
+database_id = "795701a2-deaa-439b-af89-ec6689d629a9"
+
+# === Vectorize (recherche sémantique) ===
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "revue-presse-memory"
+
+# === R2 Bucket (stockage fichiers originaux) ===
+# ⚠️ Activer R2 dans le Dashboard Cloudflare (R2 > Create bucket)
+# Puis décommenter les lignes ci-dessous
+# [[r2_buckets]]
+# binding = "DOCS_BUCKET"
+# bucket_name = "revue-presse-docs"
+
+# === Variables d'environnement ===
+[vars]
+DESTINATION_EMAIL = "ferrierjonas@gmail.com"
+TIMEZONE = "Europe/Paris"
+MAX_ARTICLES = "50"
+MAX_WORDS_PER_ARTICLE = "1500"
+AI_PROVIDER = "auto"
+PUBLIC_URL = "https://revue-presse.jeanneaj.workers.dev"
+
+# === Workers AI (fallback natif + embeddings) ===
+[ai]
+binding = "AI"

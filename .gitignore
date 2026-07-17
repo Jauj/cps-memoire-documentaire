@@ -1,0 +1,9 @@
+node_modules/
+.dev/
+.wrangler/
+dist/
+*.log
+ocr_tmp/
+*.pdf
+download/
+!scripts/
